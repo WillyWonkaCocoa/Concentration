@@ -20,6 +20,7 @@ class ViewController: UIViewController {
     }
     
     func flipCard(withEmoji emoji: String, on button: UIButton){
+        print("flipCard(withEmoji: \(emoji))");
         if button.currentTitle == emoji {
             button.setTitle("", for: UIControlState.normal)
             button.backgroundColor = #colorLiteral(red: 0.9220425086, green: 0.3960026836, blue: 1, alpha: 1);
