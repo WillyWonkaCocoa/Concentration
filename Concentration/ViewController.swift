@@ -10,20 +10,23 @@ import UIKit
 
 class ViewController: UIViewController {
     //methods and instance variables
-    var flipCount = 0
+    var flipCount = 0 {
+        didSet {
+            // property observer, executes every time flipCount is set
+            flipCountLabel.text = "Flips: \(flipCount)"
+        }
+    }
     
     @IBOutlet weak var flipCountLabel: UILabel!
     
     //method called when dog button is pressed
     @IBAction func touchCard(_ sender: UIButton) {
         flipCount += 1
-        flipCountLabel.text = "Flips: \(flipCount)"
         flipCard(withEmoji: "🐶", on: sender)
     }
     
     @IBAction func touchSecondCard(_ sender: UIButton) {
         flipCount += 1
-        flipCountLabel.text = "Flips: \(flipCount)"
         flipCard(withEmoji: "🙊", on: sender)
     }
     
