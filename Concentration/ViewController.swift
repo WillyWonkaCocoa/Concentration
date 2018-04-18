@@ -10,16 +10,25 @@ import UIKit
 
 class ViewController: UIViewController {
     //methods and instance variables
+    var flipCount = 0
+    
+    @IBOutlet weak var flipCountLabel: UILabel!
     
     //method called when dog button is pressed
     @IBAction func touchCard(_ sender: UIButton) {
+        flipCount += 1
+        flipCountLabel.text = "Flips: \(flipCount)"
         flipCard(withEmoji: "🐶", on: sender)
     }
+    
     @IBAction func touchSecondCard(_ sender: UIButton) {
+        flipCount += 1
+        flipCountLabel.text = "Flips: \(flipCount)"
         flipCard(withEmoji: "🙊", on: sender)
     }
     
     func flipCard(withEmoji emoji: String, on button: UIButton){
+        
         print("flipCard(withEmoji: \(emoji))");
         if button.currentTitle == emoji {
             button.setTitle("", for: UIControlState.normal)
