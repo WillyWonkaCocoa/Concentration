@@ -57,28 +57,29 @@ class ViewController: UIViewController {
         }
     }
     
-    private var emojiChoices = ["🙊","🐶","🦁","🐰"]
+    private var emojiChoices = ["🙊","🐶","🦁","🐰","🐔","🐼","🦊","🐸"]
     private var emoji = [Int:String]()
     
-    func emoji(for card: Card) -> String {
-        /*
-        if emoji[card.identifier] != nil {
-            return emoji[card.identifier]!
-        }else {
-            return "?"
-        }*/
-        if emoji[card.identifier] == nil {
-            // swift never has automatic type conversion
-            // create new thing, and use its initializer
-            if emojiChoices.count > 0{
-                let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
-                emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
-            }
+    private func emoji(for card: Card) -> String {
+        if emoji[card.identifier] == nil, emojiChoices.count > 0 {
+                emoji[card.identifier] = emojiChoices.remove(at: emojiChoices.count.arc4random)
         }
-        
+
         //same as above, different syntax
         return emoji[card.identifier] ?? "?"
     }
 }
-    
+
+
+extension Int {
+    var arc4random: Int {
+        if self > 0 {
+            return Int(arc4random_uniform(UInt32(self)))
+        } else if self < 0 {
+            return -Int(arc4random_uniform(UInt32(abs(self))))
+        } else {
+            return 0
+        }
+    }
+}
  

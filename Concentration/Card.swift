@@ -16,10 +16,10 @@ struct Card
     var identifier: Int
     //UI indepedent(part of model, not view), no emojis
     
-    static var identifierFactory = 0;
+    private static var identifierFactory = 0;
     
     //static function: can't send to class, only send to type itself
-    static func getUniqueIdentifier() -> Int {
+    private static func getUniqueIdentifier() -> Int {
         identifierFactory += 1
         return identifierFactory
     }

@@ -11,10 +11,10 @@ import Foundation
 class Concentration
     //no free initializers that init every var
 {
-    var cards = [Card]()
+    private(set) var cards = [Card]()
     
     // Computed Variables
-    var indexOfTheOneAndOnlyFaceUpCard: Int? {
+    private var indexOfTheOneAndOnlyFaceUpCard: Int? {
         get {
             var foundIndex: Int?
             for index in cards.indices {
@@ -36,17 +36,9 @@ class Concentration
         }
     }
     
-    // variable only set in one specific situation
-    var indexOfOneAndOnlyFaceUpCard: Int?
     
     func chooseCard(at index: Int) {
-        /*
-        if cards[index].isFaceUp {
-            cards[index].isFaceUp = false;
-        }else {
-            cards[index].isFaceUp = true;
-        }*/
-        
+        assert(cards.indices.contains(index), "Concentration.chooseCard(at: \(index)): chosen index not in the cards")
         if !cards[index].isMatched {
             if let matchIndex = indexOfTheOneAndOnlyFaceUpCard, matchIndex != index {
                 // check if cards match
@@ -70,6 +62,7 @@ class Concentration
     }
     
     init(numberOfPairsOfCards: Int){
+        assert(numberOfPairsOfCards > 0, "Concentration.inti(\(numberOfPairsOfCards)): you must have at least one pair of cards")
         // _ means ignore this name/var
         for _ in 1...numberOfPairsOfCards {
             let card = Card()
