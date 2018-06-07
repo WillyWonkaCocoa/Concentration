@@ -9,37 +9,76 @@
 import UIKit
 
 class ViewController: UIViewController {
+    //lazy means it doesn't fully initialize until someone trys to use it
+    //counts as initialized , cannot have a didSet{} (property observers)
+    private lazy var game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
+    
+    // Computed Variable
+    var numberOfPairsOfCards: Int {
+        return (cardButtons.count + 1) / 2
+    }
+    
     //methods and instance variables
-    var flipCount = 0 {
+    private(set) var flipCount = 0 {
         didSet {
             // property observer, executes every time flipCount is set
             flipCountLabel.text = "Flips: \(flipCount)"
         }
     }
     
-    @IBOutlet weak var flipCountLabel: UILabel!
+    @IBOutlet private weak var flipCountLabel: UILabel!
     
-    //method called when dog button is pressed
-    @IBAction func touchCard(_ sender: UIButton) {
+    @IBOutlet private var cardButtons: [UIButton]!
+    
+    //method called when button is pressed
+    @IBAction private func touchCard(_ sender: UIButton) {
         flipCount += 1
-        flipCard(withEmoji: "🐶", on: sender)
-    }
-    
-    @IBAction func touchSecondCard(_ sender: UIButton) {
-        flipCount += 1
-        flipCard(withEmoji: "🙊", on: sender)
-    }
-    
-    func flipCard(withEmoji emoji: String, on button: UIButton){
-        
-        print("flipCard(withEmoji: \(emoji))");
-        if button.currentTitle == emoji {
-            button.setTitle("", for: UIControlState.normal)
-            button.backgroundColor = #colorLiteral(red: 0.9220425086, green: 0.3960026836, blue: 1, alpha: 1);
-        }else{
-            button.setTitle(emoji, for: UIControlState.normal)
-            button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1);
+        // if : only executes if non-nil
+        if let cardNumber = cardButtons.index(of: sender){
+            game.chooseCard(at: cardNumber)
+            //game changes - so view has to update to model
+            updateViewFromModel()
+        } else{
+                print("chosen card was not in cardButtons")
         }
     }
+    
+    private func updateViewFromModel() {
+        for index in cardButtons.indices {
+            let button = cardButtons[index]
+            let card = game.cards[index]
+            if card.isFaceUp {
+                button.setTitle(emoji(for: card), for: UIControlState.normal)
+                button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1);
+            }else{
+                button.setTitle("", for: UIControlState.normal)
+                button.backgroundColor = card.isMatched ? #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0) : #colorLiteral(red: 0.9220425086, green: 0.3960026836, blue: 1, alpha: 1)
+            }
+        }
+    }
+    
+    private var emojiChoices = ["🙊","🐶","🦁","🐰"]
+    private var emoji = [Int:String]()
+    
+    func emoji(for card: Card) -> String {
+        /*
+        if emoji[card.identifier] != nil {
+            return emoji[card.identifier]!
+        }else {
+            return "?"
+        }*/
+        if emoji[card.identifier] == nil {
+            // swift never has automatic type conversion
+            // create new thing, and use its initializer
+            if emojiChoices.count > 0{
+                let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
+                emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
+            }
+        }
+        
+        //same as above, different syntax
+        return emoji[card.identifier] ?? "?"
+    }
 }
-
+    
+ 
