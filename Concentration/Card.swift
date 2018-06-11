@@ -8,12 +8,18 @@
 
 import Foundation
 
-struct Card
+struct Card : Hashable
     //gets free initializer that inits all variables
 {
+    var hashValue: Int { return identifier }
+    
+    static func ==(lhs: Card, rhs: Card) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
     var isFaceUp = false
     var isMatched = false
-    var identifier: Int
+    private var identifier: Int
     //UI indepedent(part of model, not view), no emojis
     
     private static var identifierFactory = 0;

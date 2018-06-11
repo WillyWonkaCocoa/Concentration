@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Concentration
+struct Concentration
     //no free initializers that init every var
 {
     private(set) var cards = [Card]()
@@ -16,47 +16,29 @@ class Concentration
     // Computed Variables
     private var indexOfTheOneAndOnlyFaceUpCard: Int? {
         get {
-            var foundIndex: Int?
-            for index in cards.indices {
-                if cards[index].isFaceUp {
-                    if foundIndex == nil {
-                        foundIndex = index
-                    } else {
-                        return nil
-                    }
-                }
-            }
-            return foundIndex
+            let faceUpCardIndices = cards.indices.filter {cards[$0].isFaceUp}
+            return faceUpCardIndices.count == 1 ? faceUpCardIndices.first : nil
         }
-        
-        set {
+        set{
             for index in cards.indices {
-                cards[index].isFaceUp = (index == newValue)
+                 cards[index].isFaceUp = (index == newValue)
             }
         }
     }
     
     
-    func chooseCard(at index: Int) {
+    mutating func chooseCard(at index: Int) {
         assert(cards.indices.contains(index), "Concentration.chooseCard(at: \(index)): chosen index not in the cards")
         if !cards[index].isMatched {
             if let matchIndex = indexOfTheOneAndOnlyFaceUpCard, matchIndex != index {
                 // check if cards match
-                if cards[matchIndex].identifier == cards[index].identifier {
+                if cards[matchIndex] == cards[index] {
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
                 }
-                
                 cards[index].isFaceUp = true
             }else{
-                // handled in computed variable
-//                // either no cards or 2 cards are face up
-//                for flipDownIndex in cards.indices {
-//                    cards[flipDownIndex].isFaceUp = false
-//                }
-//                    cards[index].isFaceUp = true
-                    indexOfTheOneAndOnlyFaceUpCard = index
-        
+                indexOfTheOneAndOnlyFaceUpCard = index
             }
         }
     }
@@ -70,5 +52,11 @@ class Concentration
         }
         
         // TODO: Shuffle the cards
+    }
+}
+
+extension Collection {
+    var oneAndOnly: Element? {
+        return count == 1 ? first : nil
     }
 }
